@@ -1,0 +1,13 @@
+name: ShinyApp_Project
+title:
+username:
+account: p2psystems
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 235808
+bundleId: 1119025
+url: https://p2psystems.shinyapps.io/ShinyApp_Project/
+when: 1512576742.36244
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData
