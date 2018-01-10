@@ -1,6 +1,7 @@
-setup <- 'setup1'
-c_n_value <- 1
+# First helper file
+# Contain most of the function called by the app 
 
+# Get the color of an agent marker depending on its type 
 getColor <- function(agent_characteristic) {
   sapply(agent_characteristic$TYPE, function(TYPE) {
     if(TYPE == 1) {
@@ -16,6 +17,7 @@ getColor <- function(agent_characteristic) {
     } })
 }
 
+# Get the Icon of an agent marker depending on its type 
 getIcon <- function(agent_characteristic) {
   sapply(agent_characteristic$TYPE, function(TYPE) {
     if(TYPE == 1) {
@@ -31,8 +33,10 @@ getIcon <- function(agent_characteristic) {
     } })
 }
 
+# Read a standard "setup file" and creates all the parameters needed for the RCI, LP, map, and app setups
 setup_to_shiny <- function(setup){
-  # Loading of the setup standardized file
+  # Loading standardized setup file
+  # It has to be in the /starter folder
   source(paste("starter/", "starter_", setup,".R", sep = ""), local = TRUE)
   
   ######## DEFINITION OF THE GRAPHIC PARAMETERS ##########
@@ -68,7 +72,7 @@ setup_to_shiny <- function(setup){
     village_farest_agent[i,] <-c(village_indice[i]-1,village_indice[i]-1) + which(gamma_village == max(gamma_village),arr.ind = TRUE)[1,]
   }
   
-  # Find the center of the village 
+  # Find the center of the villages 
   for (i in 1:nb_village){
     agent_1 <- agent_characteristic[village_farest_agent[i,1],c('LONG','LAT')]
     agent_2 <- agent_characteristic[village_farest_agent[i,2],c('LONG','LAT')]
@@ -92,10 +96,10 @@ setup_to_shiny <- function(setup){
   
   agent_characteristic$AGENT_ID <- 1:sum(nb_agent)
   
-  
   map_setup <- list('agent_characteristic' = agent_characteristic,'village_position_ref' = village_position_ref )
   
   ######## DEFINITION OF THE LP PARAMETERS ##########
+  # Not needed if the lp solver is not used
   Display_LP <- 1
   n_agents <- sum(nb_agent)
   #c_n_value <- 1
@@ -292,6 +296,7 @@ setup_to_shiny <- function(setup){
               'app_setup' = app_setup))
 }
 
+# Calculate some indicators for a specific agent
 individualResultAnalysis <- function(power_out, price_out, agent_characteristic){
   # TO DO: PUT THE AGENT LOCAL MASK DEFINITION AT THE END OF THE SOLVER 
   # IN ORDER TO CHARGE IT ONLY ONCE !
@@ -326,6 +331,7 @@ individualResultAnalysis <- function(power_out, price_out, agent_characteristic)
   return(individual_results)
 }
 
+# Generate the Leaflet Map for a given setup
 mapGeneration <- function(map_setup){
   # Input description:
   # setupParameters: data frame with four arguments: LONG, LAT, COLOR, NAME, GROUP. One line by agent
@@ -387,6 +393,7 @@ mapGeneration <- function(map_setup){
   return(map)
 }
 
+# Update the Leaflet map after solving an optimization
 mapUpdate <- function(map, map_setup, power_out, price_out){
   
   data <- map_setup$agent_characteristic
@@ -425,7 +432,8 @@ mapUpdate <- function(map, map_setup, power_out, price_out){
   return(list("map" = map, "trade_lines_characteristics" = trade_lines_characteristics))
 }
 
-
+# LP solver
+# DO NOT WORK with shyniapp.io: it used the Rmosek package which need a C compiler
 LPsolve <- function(preferences, lp_setup){
   
   # Put all the variables of the list in local
@@ -581,6 +589,7 @@ LPsolve <- function(preferences, lp_setup){
   return(list("Power_out" = Power_out, "Price_out" = Price_out))
 }
 
+# RCI solver
 RCIsolve <- function(preferences, rci_setup){
   
   for(i in 1:length(rci_setup)) assign(names(rci_setup)[i], rci_setup[[i]])
