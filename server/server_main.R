@@ -260,7 +260,7 @@ output$individual_plot <- renderPlotly({
       
       p <- plot_ly(labels = c("Conventional Power", "Green Power"), 
                    values = c(as.numeric(format(round(behavior_coeff*agent_results$total_conv_cons_power,2), nsmall = 2)),
-                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power- agent_results$total_conv_cons_power),2), nsmall = 2))),
+                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power - agent_results$total_conv_cons_power),2), nsmall = 2))),
                    width = 150, height = 150,
                    marker = list(colors = c("#d95f0e", "#2c7fb8")), 
                    showlegend = FALSE,

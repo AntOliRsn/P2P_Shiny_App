@@ -296,7 +296,7 @@ setup_to_shiny <- function(setup){
               'app_setup' = app_setup))
 }
 
-# Calculate some indicators for a specific agent
+# Calculate some indvidual indicators for each agent
 individualResultAnalysis <- function(power_out, price_out, agent_characteristic){
   # TO DO: PUT THE AGENT LOCAL MASK DEFINITION AT THE END OF THE SOLVER 
   # IN ORDER TO CHARGE IT ONLY ONCE !
@@ -721,6 +721,10 @@ RCIsolve <- function(preferences, rci_setup){
       }
     }
   }
+  # To avoid differences due to the RCI algorithm
+  Power_loc[upper.tri(Power_loc)] <- 0
+  Power_loc <- Power_loc - t(Power_loc)
+  
   return(list("Power_out" = Power_loc, "Price_out" = Price_loc[,,,1]))
 }
 
