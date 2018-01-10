@@ -1,5 +1,21 @@
-# SETUP 0 
-# 2 agents, 2 plants 
+# SETUP FILE: 1
+# CHARACTERISTICS : 4 agents, 1 village
+
+# REMEMBER: 
+# A setup file must define 3 variables:
+# - an agent_characteristic data frame containing for each agent:
+#   - LONG: the longitude of the agent
+#   - LAT: the latitude of the agent 
+#   - NAME: the name of the agent
+#   - GROUP: the group of the agent (village/community/group name)
+#   - TYPE: the type of the agent: 1 = consumer, 2 = conventional unit, 3 = wind turbine
+#                                  4 = solar plant, 5  hydro.
+# - a prop_tot matrix containing for each agent:
+#   - first column: the minimum production capacity (if the agent is a consumer it will be negative)
+#   - second column: the maximum production capacity
+#   - third column: the slope of the marginal cost/demand function
+#   - fourth column: the origin of the marginal cost/demand function
+# - a prop_emi vector containing for each agent the emission factor
 
 # Repartition of the agents in the villages
 nb_agent <- c(4)
@@ -26,7 +42,6 @@ data_2 <- data.frame(LONG=LONG_2, LAT=LAT_2, NAME = names_2)
 # Definition of the output dataframe agent_characteristic
 agent_characteristic <- rbind(data_1, data_2)
 agent_characteristic$GROUP <- c(rep("Village",4))
-agent_characteristic$COLOR <- c(rep("blue",2), rep("red",2))
 agent_characteristic$TYPE <- c(1,1,3,2)
 
 # Definition of the output dataframe prop_tot

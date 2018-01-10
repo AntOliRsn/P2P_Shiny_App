@@ -1,3 +1,7 @@
+# UI file containing the elements that deal with the "map" panel
+
+# Define the visual elements
+
 tabItem(tabName = "main",
         fluidRow(
           column(width = 9,
@@ -17,10 +21,9 @@ tabItem(tabName = "main",
                               actionButton("solverButton", label = "Run simulation")
                               )
                        )
-                             #tags$style(type='text/css', "#button { vertical-align: middle; height: 50px; width: 100%; font-size: 30px;}")
-                       )
                    )
                  )
+          )
         ),
         fluidRow(
           column(width = 9,
@@ -45,7 +48,6 @@ tabItem(tabName = "main",
                  fluidRow(
                    box(title = "Agent Characteristic", width = 12, status = "primary",solidHeader = TRUE,
                        uiOutput("GraphicalOptions_selectAgent"),
-                       #uiOutput("individual_results"),
                        div(strong("Type:"), align = "center"),
                        div(textOutput("agent_type"), align = "center"),
                        div(strong("Preferences:"), align = "center"),
@@ -58,15 +60,14 @@ tabItem(tabName = "main",
                        div(strong(textOutput("plot_title")),align = 'center'),
                        div(plotlyOutput("individual_plot",width = "150px", height = "150px"), align = "center")
                    )
-                 )#,
-                 #textOutput("test")
+                 )
           )
         ),
         fluidRow(
           div(tags$b("Authors:"), " Pierre Pinson, Tiago Sousa, Antoine Rosin")
         ),
         
-        # Individual Preferences modal Panel Selection
+        # Individual Preferences BSModal Panel Selection
         bsModal("modalExample", "Preference", "individualPreferences", size = "small",
                 #column(6,
                 introjsUI(),
