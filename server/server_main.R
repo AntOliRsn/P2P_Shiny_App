@@ -1,4 +1,4 @@
-# Server file containing the elements the deal with the "map" panel
+# Server file containing the elements that deal with the "map" panel
 
 ## Definition of the reactive variable
 
@@ -311,7 +311,7 @@ addPopover(session, "info_preference", "Preference informations", placement = "b
 ######################################################################################################################
 ## BSmodal window: Preference Selection 
 
-# Observe Event related to the preference slider
+# Observe Event related to the preference sliders of each agents
 lapply(
   1:100,                              # TEMPORARY SOLUTION: Have to figure out how to create the exact number of 
   FUN = function(agent_id){           #observe event related to the number of preference sliders
@@ -344,6 +344,7 @@ lapply(
 #   }
 # )
 
+# Display the right preference's sliders (Concerning the local or the emission preference)
 lapply(
   1:2,                              # TEMPORARY SOLUTION: Have to figure out how to create the exact number of 
   FUN = function(village_id){           #observe event related to the number of preference sliders
@@ -358,7 +359,7 @@ lapply(
   }
 )
 
-
+# Update all the agent sliders when a global preference slider is modified
 observeEvent(input$slider_global_preference, {
   agent_characteristic <- setup_variable$app_setup$agent_characteristic
   village_selected <- input$preferenceTabs
@@ -395,12 +396,14 @@ observeEvent(input$slider_global_preference, {
 #   #HTML(paste(str1,str2,str3,sep = '<br/>'))
 # })
 
-
+# Main block that deal with the BSModal window organisation
+# Display the sliders for all the "villages" (group)
 output$sliders <- renderUI({
   agent_characteristic <- setup_variable$app_setup$agent_characteristic
   village_names <- setup_variable$app_setup$village_names
   village_ids <- setup_variable$app_setup$village_ids
 
+  # Function for the local preference sliders
   village_tabset_pref1 <- function(village_id){
     lapply(agent_characteristic$AGENT_ID[agent_characteristic$GROUP_ID == village_id & agent_characteristic$BEHAVIOR == "cons"], function(agent_id) {
             sliderInput(inputId = paste("slider",agent_id,"1",sep = "_"),
@@ -409,8 +412,7 @@ output$sliders <- renderUI({
     })
   }
   
-  
-  
+  # Function for the emission preference sliders
   village_tabset_pref2 <- function(village_id){
     lapply(agent_characteristic$AGENT_ID[agent_characteristic$GROUP_ID == village_id & agent_characteristic$BEHAVIOR == "cons"], function(agent_id) {
             sliderInput(inputId = paste("slider",agent_id,"2", sep = "_"),
