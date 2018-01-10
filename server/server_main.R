@@ -1,13 +1,17 @@
-#Definition of the reactive variable obtained from the simulation
+# Server file containing the elements the deal with the "map" panel
+
+## Definition of the reactive variable
+
+# Variables obtained from the simulations 
 sim_variable <- reactiveValues(
   power_out = c(),
   price_out = c(),
   price_perceived_out = c(),
   individual_results = c(),
-  preference = matrix(0, dim(setup0$app_setup$agent_characteristic)[1],2),
-  test = c()
+  preference = matrix(0, dim(setup0$app_setup$agent_characteristic)[1],2)
 )
 
+# Variables needed to deal with the Leaflet map
 map_variable <- reactiveValues(
   map_ini = mapGeneration(setup0$map_setup),
   map = mapGeneration(setup0$map_setup),
@@ -16,6 +20,7 @@ map_variable <- reactiveValues(
   clicked_marker = NULL
 )
 
+# Lists containing all the parameters of the current setup
 setup_variable <- reactiveValues(
   lp_setup = setup0$lp_setup,
   rci_setup = setup0$rci_setup,
@@ -23,22 +28,11 @@ setup_variable <- reactiveValues(
   app_setup = setup0$app_setup
 )
 
+
 #######################################################################################################################################
+## Simulation elements
 
-
-output$P2Pmap <- renderLeaflet({
-  # Initialize the leaflet map:
-  map_variable$map
-})
-
-output$test <-  renderText({ 
-  #paste(sim_variable$power_out)
-  #paste(sim_variable$preference)
-  paste(sim_variable$individual_results$individual_marginal_money)
-})
-
-
-# Update of the app when a new setup is selected
+# Update the reactive variables when a new setup is selected
 observeEvent(input$select_setup,{
   new_setup <- input$select_setup
   new_setup <- setup_to_shiny(new_setup)
@@ -60,9 +54,11 @@ observeEvent(input$select_setup,{
   setup_variable$app_setup = new_setup$app_setup
 })
 
+# Solve the optimization problem when the "Run simulation button is clicked"
+# Adapt all the reactive variables 
 observeEvent(input$solverButton, {
   withBusyIndicatorServer("solverButton", {
-  
+    
     optimizationResults <- RCIsolve(sim_variable$preference, setup_variable$rci_setup)
     sim_variable$power_out <- optimizationResults$Power_out
     sim_variable$price_out <- optimizationResults$Price_out
@@ -78,81 +74,60 @@ observeEvent(input$solverButton, {
   })
 })
 
-output$averagePreference <- renderValueBox({
-  valueBox(
-    paste0(format(round(mean(sim_variable$preference[setup_variable$app_setup$agent_characteristic$BEHAVIOR == "cons",1])*100, 1), nsmall = 1), "%"), 
-    "Average distance preference", icon = icon("exchange"),
-    color = "light-blue"
-  )
+#######################################################################################################################################
+## Map elements
+
+# Display the map 
+output$P2Pmap <- renderLeaflet({
+  # Initialize the leaflet map:
+  map_variable$map
 })
 
-output$averagePreference2 <- renderValueBox({
-  valueBox(
-    paste0(format(round(mean(sim_variable$preference[setup_variable$app_setup$agent_characteristic$BEHAVIOR == "cons",2])*100, 1), nsmall = 1), "%"), 
-    "Average emission preference", icon = icon("recycle"),
-    color = "orange"
-  )
-})
-
-
-# observeEvent(input$slider_cn, {
-#   setup_variable$app_setup$agent_characteristic$PREFERENCE <- input$slider_cn
-# })
-
-### Graphical Options window ###
-output$GraphicalOptions_selectAgent<- renderUI({
-  agent_characteristic <- setup_variable$app_setup$agent_characteristic
-  
-  choices <- agent_characteristic$AGENT_ID
-  names(choices) <- agent_characteristic$NAME
-  
-  selectInput(inputId = "GraphicalOptions_selectAgent", label = NULL,
-              choices = choices, selected = 1)
-})
-
+# When a click is made on an agent marker, change the line trades characteristic to focus on this agent
+# Also select this agent for the "Agent characteristic" box on the right 
 observeEvent(input$P2Pmap_marker_click,{
-             # Change the focus on the right information panel
-             agent_ID <- input$P2Pmap_marker_click$id
-             updateSelectInput(session, inputId =  "GraphicalOptions_selectAgent",
-                               selected = agent_ID)
-             
-             if (map_variable$trades_displayed){
-               # Update the polylines opacity in order to focus on the selected agent trades
-               agent_characteristic <- setup_variable$map_setup$agent_characteristic
-               power_trade <- map_variable$trade_lines_characteristics$power_trade
-               line_weight <- map_variable$trade_lines_characteristics$line_weight
-               line_color <- map_variable$trade_lines_characteristics$line_color
-               labels <- map_variable$trade_lines_characteristics$labels
-               
-               agent_selected_trades <- which(power_trade == agent_ID,arr.ind = TRUE)[,1]
-               
-               proxy <- leafletProxy("P2Pmap")
-               
-               for (i in 1:dim(power_trade)[1]){
-                 
-                 if (i %in% agent_selected_trades){
-                   opacity <- 1
-                   dashArray <- 20
-                 } else {
-                   opacity <- 0.4
-                   dashArray <- NULL
-                   contour_color <- NULL
-                 }
-                 proxy %>% addPolylines(lng=~LONG,lat=~LAT,data=agent_characteristic[power_trade[i,1:2],],
-                                        color= line_color[i], weight = line_weight[i], opacity = opacity,
-                                        dashArray = dashArray,
-                                        label = HTML(labels[i]), layerId = as.character(i))
-               }
-             }
-            
-             map_variable$clicked_marker <- TRUE
+  # Change the focus on the right information panel
+  agent_ID <- input$P2Pmap_marker_click$id
+  updateSelectInput(session, inputId =  "GraphicalOptions_selectAgent",
+                    selected = agent_ID)
+  
+  if (map_variable$trades_displayed){
+    # Update the polylines opacity in order to focus on the selected agent trades
+    agent_characteristic <- setup_variable$map_setup$agent_characteristic
+    power_trade <- map_variable$trade_lines_characteristics$power_trade
+    line_weight <- map_variable$trade_lines_characteristics$line_weight
+    line_color <- map_variable$trade_lines_characteristics$line_color
+    labels <- map_variable$trade_lines_characteristics$labels
+    
+    agent_selected_trades <- which(power_trade == agent_ID,arr.ind = TRUE)[,1]
+    
+    proxy <- leafletProxy("P2Pmap")
+    
+    for (i in 1:dim(power_trade)[1]){
+      
+      if (i %in% agent_selected_trades){
+        opacity <- 1
+        dashArray <- 20
+      } else {
+        opacity <- 0.4
+        dashArray <- NULL
+      }
+      proxy %>% addPolylines(lng=~LONG,lat=~LAT,data=agent_characteristic[power_trade[i,1:2],],
+                             color= line_color[i], weight = line_weight[i], opacity = opacity,
+                             dashArray = dashArray,
+                             label = HTML(labels[i]), layerId = as.character(i))
+    }
+  }
+  
+  map_variable$clicked_marker <- TRUE
 })
 
+# Necessary to make the difference between a click on the map and a click on a marker
 observeEvent(input$P2Pmap_click,{
-  #print(input$P2Pmap_click)
   map_variable$clicked_marker <- NULL
 })
 
+# When a click is made on the map, change the trades lines for them to have the same characteristics
 observe({
   if(is.null(map_variable$clicked_marker) & map_variable$trades_displayed){
     #Reset polylines with same opacity 
@@ -172,10 +147,139 @@ observe({
   }
 })
 
-######################################################################################################################
-#### BOX GRAPHIC OPTION ELEMENTS ####
+#######################################################################################################################################
+## Information elements
 
-# Infomations panel
+## KPI top boxes 
+
+# Update the top "Average distance preference" box
+output$averagePreference <- renderValueBox({
+  valueBox(
+    paste0(format(round(mean(sim_variable$preference[setup_variable$app_setup$agent_characteristic$BEHAVIOR == "cons",1])*100, 1), nsmall = 1), "%"), 
+    "Average distance preference", icon = icon("exchange"),
+    color = "light-blue"
+  )
+})
+
+# Update the top "Average emission preference" box
+output$averagePreference2 <- renderValueBox({
+  valueBox(
+    paste0(format(round(mean(sim_variable$preference[setup_variable$app_setup$agent_characteristic$BEHAVIOR == "cons",2])*100, 1), nsmall = 1), "%"), 
+    "Average emission preference", icon = icon("recycle"),
+    color = "orange"
+  )
+})
+
+## Agent characteristic right box
+
+# Define the agents that can be selected with selectInput button
+output$GraphicalOptions_selectAgent<- renderUI({
+  agent_characteristic <- setup_variable$app_setup$agent_characteristic
+  
+  choices <- agent_characteristic$AGENT_ID
+  names(choices) <- agent_characteristic$NAME
+  
+  selectInput(inputId = "GraphicalOptions_selectAgent", label = NULL,
+              choices = choices, selected = 1)
+})
+
+# Reactive variable containing the characteristics of the selected agent
+agent_results<-reactive({ 
+  agent_selected_ID <- input$GraphicalOptions_selectAgent
+  agent_results <- sim_variable$individual_results[agent_selected_ID,]
+  return(agent_results)
+}) 
+
+# Define the plot title depending of the type of the selected agent
+output$plot_title <- renderText({
+  ifelse(agent_results()$behavior == "prod", "Production Repartition:","Consumption repartition:")
+})
+
+# Define the text depending of the type of the selected agent
+output$power_title <- renderText({
+  ifelse(agent_results()$behavior == "prod", "Total Production:","Total Consumption:")
+})
+
+# Depending of the type of the selected agent print the consumption or the production
+output$agent_power <- renderText({
+  ifelse(agent_results()$behavior == "prod", 
+         paste(as.numeric(format(round(agent_results()$total_individual_power,2), nsmall = 2)), "kWh"),
+         paste(-as.numeric(format(round(agent_results()$total_individual_power,2), nsmall = 2)), "kWh"))
+})
+
+# Define the type text depending of the type of the selected agent
+output$agent_type <- renderText({
+  ifelse(agent_results()$behavior == "prod", "Producer","Consumer")
+})
+
+# Preferences of the selected agent
+output$agent_preferences <- renderText({
+  preferences <- sim_variable$preference[agent_results()$agent_id,]
+  paste("Distance:",preferences[1], "Emissions:", preferences[2])
+})
+
+# Define the plot representing the local and green consumption repartition of the selected agent 
+output$individual_plot <- renderPlotly({
+  
+  agent_results <- agent_results()
+  
+  if (is.null(agent_results)){
+    p <- NULL
+  } else {
+    
+    m <- list(
+      l = 1,
+      r = 1,
+      b = 1,
+      t = 1,
+      pad = 1
+    )
+    
+    behavior_coeff <- ifelse(agent_results$behavior == "prod", 1,-1)
+    
+    if (input$selectPlotType == 1){ # Make the "local vs imported" plot
+      
+      title <- ifelse(behavior_coeff == 1, "Production repartition", "Consumption repartition")
+      
+      p <- plot_ly(labels = c("Local power", "Imported power"), 
+                   values = c(as.numeric(format(round(behavior_coeff*agent_results$total_individual_local_power,2), nsmall = 2)),
+                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power- agent_results$total_individual_local_power),2), nsmall = 2))),
+                   width = 150, height = 150,
+                   marker = list(colors = c("#d95f0e", "#2c7fb8")), 
+                   showlegend = FALSE,
+                   type = 'pie') %>%
+        layout(title = FALSE,
+               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+               autosize = FALSE,
+               margin = m) %>%
+        config(displayModeBar = FALSE) 
+      p$elementId <- NULL
+    } else { # Make the "green vs conventional" plot
+      title <- ifelse(behavior_coeff == 1, "Production repartition", "Consumption repartition")
+      
+      p <- plot_ly(labels = c("Conventional Power", "Green Power"), 
+                   values = c(as.numeric(format(round(behavior_coeff*agent_results$total_conv_cons_power,2), nsmall = 2)),
+                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power- agent_results$total_conv_cons_power),2), nsmall = 2))),
+                   width = 150, height = 150,
+                   marker = list(colors = c("#d95f0e", "#2c7fb8")), 
+                   showlegend = FALSE,
+                   type = 'pie') %>%
+        layout(title = FALSE,
+               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+               autosize = FALSE,
+               margin = m) %>%
+        config(displayModeBar = FALSE) 
+      p$elementId <- NULL
+    }
+  }
+  return(p)
+})
+
+## Information panels
+
+# output needed to display all the informations panel
 output$info_simulation <- renderUI({
   icon("info-circle")
 })
@@ -203,96 +307,9 @@ addPopover(session, "info_preference", "Preference informations", placement = "b
            trigger = 'click',
            options=list(container= "body"))
 
-agent_results<-reactive({ 
-  agent_selected_ID <- input$GraphicalOptions_selectAgent
-  agent_results <- sim_variable$individual_results[agent_selected_ID,]
-  return(agent_results)
-}) 
-
-output$plot_title <- renderText({
-  ifelse(agent_results()$behavior == "prod", "Production Repartition:","Consumption repartition:")
-})
-
-output$power_title <- renderText({
-  ifelse(agent_results()$behavior == "prod", "Total Production:","Total Consumption:")
-})
-
-output$agent_power <- renderText({
-  ifelse(agent_results()$behavior == "prod", 
-         paste(as.numeric(format(round(agent_results()$total_individual_power,2), nsmall = 2)), "kWh"),
-         paste(-as.numeric(format(round(agent_results()$total_individual_power,2), nsmall = 2)), "kWh"))
-})
-
-output$agent_type <- renderText({
-  ifelse(agent_results()$behavior == "prod", "Producer","Consumer")
-})
-
-output$agent_preferences <- renderText({
-  preferences <- sim_variable$preference[agent_results()$agent_id,]
-  paste("Distance:",preferences[1], "Emissions:", preferences[2])
-})
-
-output$individual_plot <- renderPlotly({
-  # agent_selected_ID <- input$GraphicalOptions_selectAgent
-  # agent_results <- sim_variable$individual_results[agent_selected_ID,]
-  agent_results <- agent_results()
-  
-  if (is.null(agent_results)){
-    p <- NULL
-  } else {
-    
-    m <- list(
-      l = 1,
-      r = 1,
-      b = 1,
-      t = 1,
-      pad = 1
-    )
-    
-    behavior_coeff <- ifelse(agent_results$behavior == "prod", 1,-1)
-    
-    if (input$selectPlotType == 1){
-    
-      title <- ifelse(behavior_coeff == 1, "Production repartition", "Consumption repartition")
-      
-      p <- plot_ly(labels = c("Local power", "Imported power"), 
-                   values = c(as.numeric(format(round(behavior_coeff*agent_results$total_individual_local_power,2), nsmall = 2)),
-                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power- agent_results$total_individual_local_power),2), nsmall = 2))),
-                   width = 150, height = 150,
-                   marker = list(colors = c("#d95f0e", "#2c7fb8")), 
-                   showlegend = FALSE,
-                   type = 'pie') %>%
-        layout(title = FALSE,
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               autosize = FALSE,
-               margin = m) %>%
-        config(displayModeBar = FALSE) 
-      p$elementId <- NULL
-    } else {
-      title <- ifelse(behavior_coeff == 1, "Production repartition", "Consumption repartition")
-      
-      p <- plot_ly(labels = c("Conventional Power", "Green Power"), 
-                   values = c(as.numeric(format(round(behavior_coeff*agent_results$total_conv_cons_power,2), nsmall = 2)),
-                              as.numeric(format(round(behavior_coeff*(agent_results$total_individual_power- agent_results$total_conv_cons_power),2), nsmall = 2))),
-                   width = 150, height = 150,
-                   marker = list(colors = c("#d95f0e", "#2c7fb8")), 
-                   showlegend = FALSE,
-                   type = 'pie') %>%
-        layout(title = FALSE,
-               xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-               autosize = FALSE,
-               margin = m) %>%
-        config(displayModeBar = FALSE) 
-      p$elementId <- NULL
-    }
-  }
-  return(p)
-})
 
 ######################################################################################################################
-### BSmodal WINDOW: Preference Selection ###
+## BSmodal window: Preference Selection 
 
 # Observe Event related to the preference slider
 lapply(
