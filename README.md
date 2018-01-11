@@ -2,13 +2,13 @@
 
 > *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elekro](http://www.elektro.dtu.dk/english)*
 
-The aim of the App is to raise the awareness of people about P2P electricity market. The user can visualize the exchange of energy between agents for various setups, and see the impact of individual preferences such as consuming green or local.
+The aim of the App is to raise the awareness of people about P2P electricity market. The user can visualize the exchange of energy between agents for various setups, and see the impact of individual preferences that reflect the willing to consume green or local.
 
 # Organization
 The code is organized in four main folders:
 - ui/ : containing all the ui*.R files that define the layout.
 - server/ : containing the server*.R files that deal with the reactive variables.
-- helper/ : containing the helper*.R files storing various function needed to define the Leaflet map, solve the optmiization problems, analyze the results, ...
+- helper/ : containing the helper*.R files storing various functions needed to define the Leaflet map, solve the optmiization problem, analyze the results, ...
 - starter/ : containing the starter_setup*.R files that defined the different setups used.
 
 The app.R file gathered all the elements to lunch the app.
@@ -34,6 +34,8 @@ A setup file must define 3 variables:
 - If a new setup is added, one must also adapt the 'select_setup' selectInput button in the app.R file.
 - Due to the RCI algorithm, solving the optimization problem can takes few seconds if most of the peferences are set to zero.
 
+
+> *For any questions about the App contact Antoine Rosin at s162301@student.dtu.dk*
 
 
 
