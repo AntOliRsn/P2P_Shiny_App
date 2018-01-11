@@ -1,8 +1,6 @@
-# Shiny tips & tricks for improving your apps and solving common problems
+# Shiny Peer-to-Peer electricity market Application 
 
-[![Donate](http://i.imgur.com/vCIGFrH.png)](https://www.paypal.me/daattali)
-
-> *Copyright 2016 [Dean Attali](http://deanattali.com). Licensed under the MIT license.*
+> *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elekro](http://www.elektro.dtu.dk/english) *
 
 This document contains a collection of various Shiny tricks that I commonly use or that I know many people ask about. Each folder contains a complete functional Shiny app that demonstrates how to perform a non trivial task in Shiny.
 
