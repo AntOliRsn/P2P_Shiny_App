@@ -4,25 +4,34 @@
 
 The aim of the App is to raise the awareness of people about P2P electricity market. The user can visualize the exchange of energy between agents for various setups, and see the impact of individual preferences such as consuming green or local.
 
-# Organisation
+# Organization
 The code is organized in four main folders:
 - ui/ : containing all the ui*.R files that define the layout
 - server/ : containing the server*.R files that deal with the reactive variables 
 - helper/ : containing the helper*.R files storing various function needed to define the Leaflet map, solve the optmiization problems, analyze the results, ...
 - starter/ : containing the starter_setup*.R files that defined the different setups used.
 
+The app.R file gathered all the elements to lunch the app.
 
-## Test 
-sdkjfd
+# Information
+
+### Setup file requirments
+A setup file must define 3 variables:
+- an agent_characteristic data frame containing for each agent:
+  - LONG: the longitude of the agent
+  - LAT: the latitude of the agent 
+  - NAME: the name of the agent
+  - GROUP: the group of the agent (village/community/group name)
+  - TYPE: the type of the agent: 1 = consumer, 2 = conventional unit, 3 = wind turbine 4 = solar plant, 5  hydro
+- a prop_tot matrix containing for each agent:
+  - first column: the minimum production capacity (if the agent is a consumer it will be negative)
+  - second column: the maximum production capacity
+  - third column: the slope of the marginal cost/demand function
+  - fourth column: the origin of the marginal cost/demand function
+- a prop_emi vector containing for each agent the emission factor
+
+### Adding a new setup
 
 
-<h1 id="updates">Updates</h1>
 
-This list is slowly growing with time. Here are the new tricks added since the post was originally published:
 
-- 2016-08-29: [Getting the value of an object in a running Shiny app without access to a debugger](#debug-value) 
-- 2016-09-03: [Show a function's messages and warnings to the user](#show-warnings-messages)
-- 2016-09-16: [Use a custom function to convert the JavaScript data into an R object](#javascript-to-r-handler)
-- 2016-10-11: [Run arbitrary code live in Shiny - great for testing during development](#run-arbitrary-code)
-- 2016-11-23: [Adding text (or inputs) to the navigation bar in a navbarPage](#navbar-add-text)
-- 2017-02-12: Added a 'Very advanced' section with 3 clever reusable shiny constructs
