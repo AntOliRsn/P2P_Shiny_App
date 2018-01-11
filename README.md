@@ -5,8 +5,12 @@
 The aim of the App is to raise the awareness of people about P2P electricity market. The user can visualize the exchange of energy between agents for various setups, and see the impact of individual preferences such as consuming green or local.
 
 # Organisation
+The code is organized in four main folders:
+- ui/ : containing all the ui*.R files that define the layout
+- server/ : containing the server*.R files that deal with the reactive variables 
+- helper/ : containing the helper*.R files storing various function needed to define the Leaflet map, solve the optmiization problems, analyze the results, ...
+- starter/ : containing the starter_setup*.R files that defined the different setups used.
 
-qjkdhfjksdhfsd
 
 ## Test 
 sdkjfd
