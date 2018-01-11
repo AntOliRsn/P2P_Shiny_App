@@ -1,6 +1,6 @@
 # Shiny Peer-to-Peer electricity market Application 
 
-> *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elekro](http://www.elektro.dtu.dk/english) *
+> *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elekro](http://www.elektro.dtu.dk/english)*
 
 This document contains a collection of various Shiny tricks that I commonly use or that I know many people ask about. Each folder contains a complete functional Shiny app that demonstrates how to perform a non trivial task in Shiny.
 
