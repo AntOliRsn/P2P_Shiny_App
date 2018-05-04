@@ -1,10 +1,24 @@
+source("ui/ui_text.R")
+
 tabItem(tabName = "about",
+        
         h2("First Version"),
         br(),
         
-        h3("Purpose of the project:"),
-        p("Description of Tiago needed"),
-        br(),
+        
+        tabsetPanel(
+          tabPanel("P2P markets description",
+                   
+                   market_description()
+                   
+                  ),
+          tabPanel("More info for 'energy geeks'"),
+          tabPanel("App guidelines")
+        ),
+        
+        
+       
+        
         
         h3("App guidelines:"),
         
