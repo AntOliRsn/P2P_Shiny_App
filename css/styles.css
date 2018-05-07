@@ -1,0 +1,13 @@
+img.center  {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+
+div.info {
+    text-align: justify;
+    text-justify: inter-word;
+    width: 800px;
+}

@@ -38,6 +38,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   useShinyjs(),
   introjsUI(),
+  includeCSS("css/styles.css"),
   tags$style(appCSS),
   tabItems(
     source("ui/ui_main.R",  local = TRUE)$value,
