@@ -1,6 +1,6 @@
 # Shiny Peer-to-Peer electricity market Application 
 
-> *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elekro](http://www.elektro.dtu.dk/english)*
+> *Antoine Rosin, Tiago Tousa and Pierre Pinson for [DTU Elektro](http://www.elektro.dtu.dk/english)*
 
 The aim of the App is to raise the awareness of people about P2P electricity market. The user can visualize the exchange of energy between agents for various setups, and see the impact of individual preferences that reflect the willing to consume green or local.
 
