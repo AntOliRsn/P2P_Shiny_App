@@ -41,7 +41,8 @@ setup_to_shiny <- function(setup){
   
   ######## DEFINITION OF THE GRAPHIC PARAMETERS ##########
   nb_village <- length(unique(agent_characteristic$GROUP))
-  nb_agent <- count(agent_characteristic, "GROUP")$freq
+  count_agent <- count(agent_characteristic, "GROUP")
+  nb_agent <- count_agent[match(unique(agent_characteristic$GROUP), count_agent$GROUP), ]$freq
   village_indice <- c(0,cumsum(nb_agent))+1
   
   # Reconstruction of the distance gamma matrix

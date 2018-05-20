@@ -26,7 +26,7 @@ setup0 <- setup_to_shiny('setup1')    # Temporary: initialize a setup at the ope
 
 # Creates the sidebar at the right of the app
 sidebar <- dashboardSidebar(
-  selectInput('select_setup', 'Select setup', c("NorthWest Jutland" = "setup0", "Funen" = "setup1")),
+  selectInput('select_setup', 'Select setup', c("NorthWest Jutland" = "setup0", "Funen" = "setup1", "Svalin" = "setup2")),
   sidebarMenu(
     menuItem("Map", tabName = "main", icon = icon("map-o")),
     menuItem("Analysis", tabName = "analysis", icon = icon("area-chart")),

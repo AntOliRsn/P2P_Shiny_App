@@ -5,9 +5,9 @@ account: p2psystems
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 235808
-bundleId: 1171778
+bundleId: 1360540
 url: https://p2psystems.shinyapps.io/ShinyApp_Project/
-when: 1515670016.25164
+when: 1525714695.0741
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData|README.md
