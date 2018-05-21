@@ -34,7 +34,7 @@ LAT_1 = c(55.660166209799655,
 #           55.64171396107383)
 
 # GPS in case we need to split incineration plant into 2, because we cannot have village with 1 single agent
-LONG_2 = c(12.12011250000005,
+LONG_2 = c(12.120112500000005,
            12.120895705032353)
 LAT_2 = c(55.641509,
           55.64163161403202)
