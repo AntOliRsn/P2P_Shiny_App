@@ -21,23 +21,23 @@
 nb_agent <- c(3,2)
 
 # Position of the agents
-LONG_1 = c(12.145823520307204,
+LONG_1 = c(12.146044823417697,
            12.145941537503859,
-           12.146059554700514)
-LAT_1 = c(55.659571290547476,
+           12.14646861244205)
+LAT_1 = c(55.660166209799655,
           55.65958490806486,
-          55.659598525577486)
+          55.65978492318476)
 
-LONG_2 = c(12.120112500000005,
-           12.121112500000005)
-LAT_2 = c(55.641509,
-          55.64209 )
+# LONG_2 = c(12.120112500000005,
+#            12.120901796112094)
+# LAT_2 = c(55.641509,
+#           55.64171396107383)
 
 # GPS in case we need to split incineration plant into 2, because we cannot have village with 1 single agent
-# LONG_2 = c(12.120112500000005,
-#            12.120895705032353)
-# LAT_2 = c(55.641509,
-#           55.64163161403202)
+LONG_2 = c(12.120112500000005,
+           12.120895705032353)
+LAT_2 = c(55.641509,
+          55.64163161403202)
 
 set.seed(10)  # For example setup
 names_1 <- c('Pierre-Elouan','Katja','Jesper')
@@ -56,9 +56,9 @@ agent_characteristic$TYPE <- c(4,1,1,2,2) # PV, consumer, consumer, dirty plant
 pmin <- c(0,-7.01, -7.01, 0, 0)
 pmax <- c(15,-7,-7,7.5, 7.5)
 a_coeff <- c(0.067,0.215, 0.215, 0.067, 0.067)
-b_coeff <- c(6.5, 6, 6, 3, 3)
+b_coeff <- c(4.4, 6, 6, 3, 3)
 
 prop_tot <- cbind(pmin,pmax,a_coeff,b_coeff)
 
 # Load of the emission characteristic 
-prop_emi <- c(0, 0, 0, 5, 5)
+prop_emi <- c(0, 0, 0, 3, 3)
